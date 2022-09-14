@@ -9,8 +9,22 @@ const models_1 = require("../models");
 const contract_1 = require("../models/contract");
 const utils_1 = require("../utils");
 class Contract {
-    static async findAll() {
-        return this.model.find().populate('lender').populate('borrower').exec();
+    static async findAll(id) {
+        return this.model
+            .find({
+            $and: [
+                {
+                    $or: [{ lender: id }, { borrower: id }],
+                },
+                {
+                    status: { $ne: 'deleted' },
+                },
+            ],
+        })
+            .populate('lender')
+            .populate('borrower')
+            .sort({ createdAt: -1 })
+            .exec();
     }
     static async findById(id) {
         const uid = new mongoose_1.default.mongo.ObjectId(id);
@@ -25,7 +39,8 @@ class Contract {
         const operation = contract.operations[0];
         operation.type = 'loan';
         contract.operations = [operation];
-        return await this.model.create(contract);
+        const ct = await this.model.create(contract);
+        return await this.findById(ct.id);
     }
     static async addOperation(id, operation) {
         const contract = await this.model.findById(id).populate('lender').populate('borrower').exec();
@@ -33,7 +48,36 @@ class Contract {
             throw new utils_1.HttpError('El contrato no existe', 404);
         }
         contract.operations.push(operation);
-        return await contract.save();
+        await contract.save();
+        const op = contract.operations[contract.operations.length - 1];
+        return op;
+    }
+    static async deleteContract(id) {
+        const contract = await this.model.findById(id);
+        if (!contract) {
+            throw new utils_1.HttpError('El contrato no existe', 404);
+        }
+        contract.status = 'deleted';
+        await contract.save();
+        return contract.id;
+    }
+    static async inactivateContract(id) {
+        const contract = await this.model.findById(id).populate('lender').populate('borrower').exec();
+        if (!contract) {
+            throw new utils_1.HttpError('El contrato no existe', 404);
+        }
+        contract.status = 'inactive';
+        await contract.save();
+        return contract;
+    }
+    static async deleteOperation(id, operationId) {
+        const contract = await this.model.findById(id);
+        if (!contract) {
+            throw new utils_1.HttpError('El contrato no existe', 404);
+        }
+        contract.operations = contract.operations.filter((op) => op.id !== operationId);
+        await contract.save();
+        return contract.id;
     }
 }
 exports.Contract = Contract;

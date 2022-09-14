@@ -10,7 +10,7 @@ const email = Joi.string()
   .email({ tlds: { allow: false } })
   .messages(messages);
 const picture = Joi.string().uri().messages(messages);
-const password = Joi.string().min(6).max(30).messages(messages);
+const password = Joi.string().min(4).max(30).messages(messages);
 
 export const signupSchema = Joi.object<IUser & { passwordConfirmation: string }>({
   firstName: firstName.required(),

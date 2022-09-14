@@ -1,9 +1,10 @@
 import { IUser } from './user';
-export type IContractStatus = 'active' | 'inactive' | 'pending' | 'expired';
+export type IContractStatus = 'active' | 'inactive' | 'pending' | 'expired' | 'deleted';
 
 export type IOperationType = 'payment' | 'loan';
 
 export const OperationTypes: IOperationType[] = ['payment', 'loan'];
+export const ContractStatuses: IContractStatus[] = ['active', 'inactive', 'pending', 'expired', 'deleted'];
 
 export interface IOperation {
   id: string;

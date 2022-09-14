@@ -11,7 +11,8 @@ const schemas_1 = require("../schemas");
 const router = express_1.default.Router();
 exports.contractRouter = router;
 router.get('/', (_req, res, next) => {
-    services_1.Contract.findAll()
+    const userId = _req.user._id;
+    services_1.Contract.findAll(userId)
         .then((contracts) => res.json(contracts))
         .catch(next);
 });
@@ -25,8 +26,23 @@ router.post('/', (0, utils_1.validatorFieds)(schemas_1.createContractSchema), (r
         .then((contract) => res.json(contract))
         .catch(next);
 });
+router.delete('/:id', (req, res, next) => {
+    services_1.Contract.deleteContract(req.params.id)
+        .then((contract) => res.json(contract))
+        .catch(next);
+});
 router.post('/:id/operations', (0, utils_1.validatorFieds)(schemas_1.addOperationSchema), (req, res, next) => {
     services_1.Contract.addOperation(req.params.id, req.body)
+        .then((contract) => res.json(contract))
+        .catch(next);
+});
+router.put('/:id/inactivate', (req, res, next) => {
+    services_1.Contract.inactivateContract(req.params.id)
+        .then((contract) => res.json(contract))
+        .catch(next);
+});
+router.delete('/:id/operations/:opId', (req, res, next) => {
+    services_1.Contract.deleteOperation(req.params.id, req.params.opId)
         .then((contract) => res.json(contract))
         .catch(next);
 });

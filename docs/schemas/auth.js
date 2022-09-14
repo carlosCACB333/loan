@@ -14,7 +14,7 @@ const email = joi_1.default.string()
     .email({ tlds: { allow: false } })
     .messages(joiMessages_1.messages);
 const picture = joi_1.default.string().uri().messages(joiMessages_1.messages);
-const password = joi_1.default.string().min(6).max(30).messages(joiMessages_1.messages);
+const password = joi_1.default.string().min(4).max(30).messages(joiMessages_1.messages);
 exports.signupSchema = joi_1.default.object({
     firstName: firstName.required(),
     lastName: lastName.required(),

@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema } from 'mongoose';
-import { IContract } from '../interfaces';
+import { ContractStatuses, IContract } from '../interfaces';
 import { OperationTypes } from '../interfaces';
 
 const ContractSchema = new Schema<IContract>(
@@ -12,7 +12,7 @@ const ContractSchema = new Schema<IContract>(
     status: {
       type: String,
       required: true,
-      enum: ['active', 'inactive', 'pending', 'expired'],
+      enum: ContractStatuses,
       default: 'active',
     },
 

@@ -6,7 +6,8 @@ import { addOperationSchema, createContractSchema } from '../schemas';
 const router = express.Router();
 
 router.get('/', (_req, res, next) => {
-  Contract.findAll()
+  const userId = (_req as any).user._id;
+  Contract.findAll(userId)
     .then((contracts) => res.json(contracts))
     .catch(next);
 });
@@ -23,8 +24,26 @@ router.post('/', validatorFieds(createContractSchema), (req: any, res, next) => 
     .catch(next);
 });
 
+router.delete('/:id', (req, res, next) => {
+  Contract.deleteContract(req.params.id)
+    .then((contract) => res.json(contract))
+    .catch(next);
+});
+
 router.post('/:id/operations', validatorFieds(addOperationSchema), (req, res, next) => {
   Contract.addOperation(req.params.id, req.body)
+    .then((contract) => res.json(contract))
+    .catch(next);
+});
+
+router.put('/:id/inactivate', (req, res, next) => {
+  Contract.inactivateContract(req.params.id)
+    .then((contract) => res.json(contract))
+    .catch(next);
+});
+
+router.delete('/:id/operations/:opId', (req, res, next) => {
+  Contract.deleteOperation(req.params.id, req.params.opId)
     .then((contract) => res.json(contract))
     .catch(next);
 });

@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Contract = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const interfaces_1 = require("../interfaces");
+const interfaces_2 = require("../interfaces");
 const ContractSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -34,7 +35,7 @@ const ContractSchema = new mongoose_1.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['active', 'inactive', 'pending', 'expired'],
+        enum: interfaces_1.ContractStatuses,
         default: 'active',
     },
     lender: {
@@ -62,7 +63,7 @@ const ContractSchema = new mongoose_1.Schema({
             type: {
                 type: String,
                 required: true,
-                enum: interfaces_1.OperationTypes,
+                enum: interfaces_2.OperationTypes,
             },
             description: {
                 type: String,
