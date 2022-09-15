@@ -1,7 +1,7 @@
 import express from 'express';
 import { Contract } from '../services/';
 import { validatorFieds } from '../utils';
-import { addOperationSchema, createContractSchema } from '../schemas';
+import { addOperationSchema, createContractSchema, updateContractNameSchema } from '../schemas';
 
 const router = express.Router();
 
@@ -26,6 +26,12 @@ router.post('/', validatorFieds(createContractSchema), (req: any, res, next) => 
 
 router.delete('/:id', (req, res, next) => {
   Contract.deleteContract(req.params.id)
+    .then((contract) => res.json(contract))
+    .catch(next);
+});
+
+router.patch('/:id/name', validatorFieds(updateContractNameSchema), (req, res, next) => {
+  Contract.updateContractName(req.params.id, req.body.name)
     .then((contract) => res.json(contract))
     .catch(next);
 });

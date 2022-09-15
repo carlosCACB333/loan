@@ -30,10 +30,14 @@ export const createContractSchema = Joi.object<IContract>({
   interest,
   term,
   operations: operations.required(),
-});
+}).messages(messages);
 
 export const addOperationSchema = Joi.object<IOperation>({
   amount: amount.required(),
   type: opType.required(),
   description,
-});
+}).messages(messages);
+
+export const updateContractNameSchema = Joi.object<IContract>({
+  name: name.required(),
+}).messages(messages);

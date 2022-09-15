@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addOperationSchema = exports.createContractSchema = void 0;
+exports.updateContractNameSchema = exports.addOperationSchema = exports.createContractSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const contract_1 = require("../interfaces/contract");
 const joiMessages_1 = require("../utils/joiMessages");
@@ -29,9 +29,12 @@ exports.createContractSchema = joi_1.default.object({
     interest,
     term,
     operations: operations.required(),
-});
+}).messages(joiMessages_1.messages);
 exports.addOperationSchema = joi_1.default.object({
     amount: amount.required(),
     type: opType.required(),
     description,
-});
+}).messages(joiMessages_1.messages);
+exports.updateContractNameSchema = joi_1.default.object({
+    name: name.required(),
+}).messages(joiMessages_1.messages);

@@ -33,3 +33,16 @@ router.get('/renew', middlewares_1.authenticate, (req, res, next) => {
         .then((credential) => res.json(credential))
         .catch(next);
 });
+router.patch('/change-password', middlewares_1.authenticate, (0, utils_1.validatorFieds)(schemas_1.changePasswordSchema), (req, res, next) => {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user._id;
+    services_1.Auth.changePassword(userId, oldPassword, newPassword)
+        .then((credential) => res.json(credential))
+        .catch(next);
+});
+router.put('/update-profile', middlewares_1.authenticate, (0, utils_1.validatorFieds)(schemas_1.updateProfileSchema), (req, res, next) => {
+    const userId = req.user._id;
+    services_1.Auth.updateProfile(userId, req.body)
+        .then((credential) => res.json(credential))
+        .catch(next);
+});

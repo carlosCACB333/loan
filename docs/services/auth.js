@@ -87,3 +87,25 @@ Auth.findUserByToken = async (token) => {
     const user = await _a.findById(id);
     return user;
 };
+Auth.changePassword = async (id, oldPassword, newPassword) => {
+    const user = await _a.findById(id);
+    const isValid = await bcrypt_1.default.compare(oldPassword, user.password);
+    if (!isValid) {
+        throw new utils_1.HttpError('Contraseña incorrecta', 401, '', {
+            oldPassword: 'Contraseña incorrecta',
+        });
+    }
+    user.password = await bcrypt_1.default.hash(newPassword, 10);
+    await user.save();
+    const token = _a.generateToken(user.id);
+    return { user, token };
+};
+Auth.updateProfile = async (id, data) => {
+    const user = await _a.findById(id);
+    user.firstName = data.firstName || user.firstName;
+    user.lastName = data.lastName || user.lastName;
+    user.email = data.email || user.email;
+    user.photo = data.photo || user.photo;
+    await user.save();
+    return user;
+};

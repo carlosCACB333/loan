@@ -31,6 +31,11 @@ router.delete('/:id', (req, res, next) => {
         .then((contract) => res.json(contract))
         .catch(next);
 });
+router.patch('/:id/name', (0, utils_1.validatorFieds)(schemas_1.updateContractNameSchema), (req, res, next) => {
+    services_1.Contract.updateContractName(req.params.id, req.body.name)
+        .then((contract) => res.json(contract))
+        .catch(next);
+});
 router.post('/:id/operations', (0, utils_1.validatorFieds)(schemas_1.addOperationSchema), (req, res, next) => {
     services_1.Contract.addOperation(req.params.id, req.body)
         .then((contract) => res.json(contract))

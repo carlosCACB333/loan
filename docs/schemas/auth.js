@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginSchema = exports.signupSchema = exports.uid = void 0;
+exports.updateProfileSchema = exports.changePasswordSchema = exports.loginSchema = exports.signupSchema = exports.uid = void 0;
 const joi_1 = __importDefault(require("joi"));
 const joiMessages_1 = require("../utils/joiMessages");
 const uid = () => joi_1.default.string().regex(/^[0-9a-fA-F]{24}$/, 'No es un ObjectId válido');
@@ -26,4 +26,15 @@ exports.signupSchema = joi_1.default.object({
 exports.loginSchema = joi_1.default.object({
     email: email.required(),
     password: password.required(),
+}).messages(joiMessages_1.messages);
+exports.changePasswordSchema = joi_1.default.object({
+    oldPassword: password.required(),
+    newPassword: password.required(),
+    passwordConfirmation: password.required().valid(joi_1.default.ref('newPassword')),
+}).messages(joiMessages_1.messages);
+exports.updateProfileSchema = joi_1.default.object({
+    firstName,
+    lastName,
+    email,
+    photo: picture.allow(''),
 }).messages(joiMessages_1.messages);

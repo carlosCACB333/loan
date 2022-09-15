@@ -86,4 +86,28 @@ export class Auth {
     const user = await this.findById(id);
     return user;
   };
+
+  public static changePassword = async (id: string, oldPassword: string, newPassword: string) => {
+    const user = await this.findById(id);
+    const isValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isValid) {
+      throw new HttpError('Contraseña incorrecta', 401, '', {
+        oldPassword: 'Contraseña incorrecta',
+      });
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    const token = this.generateToken(user.id);
+    return { user, token };
+  };
+
+  public static updateProfile = async (id: string, data: Partial<IUser>) => {
+    const user = await this.findById(id);
+    user.firstName = data.firstName || user.firstName;
+    user.lastName = data.lastName || user.lastName;
+    user.email = data.email || user.email;
+    user.photo = data.photo || user.photo;
+    await user.save();
+    return user;
+  };
 }

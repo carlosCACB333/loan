@@ -69,6 +69,16 @@ export class Contract {
     return contract.id;
   }
 
+  public static async updateContractName(id: string, name: string): Promise<IContract | null> {
+    const contract = await this.model.findById(id);
+    if (!contract) {
+      throw new HttpError('El contrato no existe', 404);
+    }
+    contract.name = name;
+    await contract.save();
+    return contract;
+  }
+
   public static async inactivateContract(id: string): Promise<IContract | null> {
     const contract = await this.model.findById(id).populate('lender').populate('borrower').exec();
     if (!contract) {

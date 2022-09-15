@@ -25,3 +25,20 @@ export const loginSchema = Joi.object<IUser>({
   email: email.required(),
   password: password.required(),
 }).messages(messages);
+
+export const changePasswordSchema = Joi.object<{
+  passwordConfirmation: string;
+  oldPassword: string;
+  newPassword: string;
+}>({
+  oldPassword: password.required(),
+  newPassword: password.required(),
+  passwordConfirmation: password.required().valid(Joi.ref('newPassword')),
+}).messages(messages);
+
+export const updateProfileSchema = Joi.object<IUser>({
+  firstName,
+  lastName,
+  email,
+  photo: picture.allow(''),
+}).messages(messages);
