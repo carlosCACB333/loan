@@ -42,7 +42,8 @@ router.patch('/change-password', middlewares_1.authenticate, (0, utils_1.validat
 });
 router.put('/update-profile', middlewares_1.authenticate, (0, utils_1.validatorFieds)(schemas_1.updateProfileSchema), (req, res, next) => {
     const userId = req.user._id;
+    const token = req.token;
     services_1.Auth.updateProfile(userId, req.body)
-        .then((credential) => res.json(credential))
+        .then((credential) => res.json({ user: credential, token }))
         .catch(next);
 });
