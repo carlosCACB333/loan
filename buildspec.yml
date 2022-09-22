@@ -2,6 +2,8 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      nodejs: 16.17.0
     commands:
       - npm install -g typescript
   pre_build:
@@ -16,7 +18,9 @@ phases:
   post_build:
     commands:
       - echo Removing unnecessary files...
-      - rm -rf node_modules/
 artifacts:
   files:
-    - '**/*'
+    - dist/**/*
+    - package.json
+    - package-lock.json
+    - node_modules/**/*
