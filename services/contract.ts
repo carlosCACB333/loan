@@ -7,21 +7,91 @@ export class Contract {
   private static model = ContractModel;
 
   public static async findAll(id: string): Promise<IContract[]> {
-    return this.model
-      .find({
-        $and: [
-          {
-            $or: [{ lender: id }, { borrower: id }],
-          },
-          {
-            status: { $ne: 'deleted' },
-          },
-        ],
-      })
-      .populate('lender')
-      .populate('borrower')
-      .sort({ createdAt: -1 })
-      .exec();
+    //  const contracts=this.model
+    //    .find({
+    //      $and: [
+    //        {
+    //          $or: [{ lender: id }, { borrower: id }],
+    //        },
+    //        {
+    //          status: { $ne: 'deleted' },
+    //        },
+    //      ],
+    //    })
+    //    .populate('lender')
+    //    .populate('borrower')
+    //    .sort({ 'operations.[createdAt]': -1 })
+    //    .exec();
+
+    const uid = new mongoose.Types.ObjectId(id);
+    const contracts = await this.model.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              $or: [{ lender: uid }, { borrower: uid }],
+            },
+            {
+              status: { $ne: 'deleted' },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'lender',
+          foreignField: '_id',
+          as: 'lender',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'borrower',
+          foreignField: '_id',
+          as: 'borrower',
+        },
+      },
+
+      {
+        $unwind: '$lender',
+      },
+      {
+        $unwind: '$borrower',
+      },
+      {
+        $unwind: '$operations',
+      },
+      {
+        $sort: {
+          'operations.createdAt': -1,
+        },
+      },
+
+      {
+        $group: {
+          _id: '$_id',
+          lender: { $first: '$lender' },
+          borrower: { $first: '$borrower' },
+          name: { $first: '$name' },
+          status: { $first: '$status' },
+          operations: { $push: '$operations' },
+          createdAt: { $first: '$createdAt' },
+          updatedAt: { $first: '$updatedAt' },
+          interest: { $first: '$interest' },
+          term: { $first: '$term' },
+        },
+      },
+
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+
+    return contracts;
   }
 
   public static async findById(id: string): Promise<IContract | null> {

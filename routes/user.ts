@@ -9,4 +9,11 @@ router.get('/', (_req, res, next) => {
     .catch(next);
 });
 
+router.post('/search', (req, res, next) => {
+  const { search = '' } = req.body as { search?: string };
+  User.search(search)
+    .then((users) => res.json(users))
+    .catch(next);
+});
+
 export { router as userRouter };

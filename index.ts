@@ -4,6 +4,9 @@ import { consts } from './consts';
 import { errorHandler } from './middlewares';
 import { conexion } from './models/connection';
 import { router } from './routes';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerOptions } from './utils';
 
 class Server {
   private readonly app: express.Application;
@@ -11,6 +14,7 @@ class Server {
   constructor() {
     this.app = express();
     this.config();
+    this.docs();
     this.routes();
   }
 
@@ -18,6 +22,11 @@ class Server {
     this.app.use(express.json());
     this.app.set('port', consts.port);
     conexion();
+  }
+
+  private docs(): void {
+    const swaggerDocs = swaggerJsdoc(swaggerOptions);
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
   }
 
   private routes(): void {

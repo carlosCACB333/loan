@@ -6,15 +6,25 @@ import { validatorFieds } from '../utils';
 
 const router = express.Router();
 
-router.post('/signup', validatorFieds(signupSchema), (req, res, next) => {
-  Auth.signup(req.body)
-    .then((credential) => res.json(credential))
-    .catch(next);
-});
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *  post:
+ *   description: use to login
+ *  responses:
+ *  '200':
+ *  description: A successful login
+ */
 
 router.post('/login', validatorFieds(loginSchema), (req, res, next) => {
   const { email, password } = req.body;
   Auth.login(email, password)
+    .then((credential) => res.json(credential))
+    .catch(next);
+});
+
+router.post('/signup', validatorFieds(signupSchema), (req, res, next) => {
+  Auth.signup(req.body)
     .then((credential) => res.json(credential))
     .catch(next);
 });
