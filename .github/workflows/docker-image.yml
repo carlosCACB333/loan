@@ -28,8 +28,8 @@ jobs:
     - name: Buid image
       env:
         PORT: 8080
-        MONGO_URL: ${{ MONGO_URL }}
-        JWT_SECRET: ${{ JWT_SECRET }}
+        MONGO_URL: ${{ secrets.MONGO_URL }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
         STAGE: prod
         IMAGE_NAME: carloscb8080/loan:v1.0.0
       run:
