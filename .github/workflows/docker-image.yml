@@ -24,6 +24,8 @@ jobs:
       run:
         echo "Start login"
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo $DOCKER_USER
+        echo $DOCKER_PASSWORD
         echo "End login"
     - name: Buid image
       env:
