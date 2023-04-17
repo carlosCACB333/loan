@@ -39,5 +39,6 @@ jobs:
         IMAGE_NAME: carloscb8080/loan:v1.0.0
       run:
         docker push $IMAGE_NAME
+        
 #     - name: Build the Docker image
 #       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
