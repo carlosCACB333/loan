@@ -23,7 +23,7 @@ jobs:
           major_pattern: "major:"
           minor_pattern: "feat:"
           patch_pattern: "fix:"
-          format: "v${major}.${minor}.${patch}-${prerelease}.${increment}"
+          format: "v${major}.${minor}.${patch}-prerelease${increment}"
 
       - name: Docker login
         env:
