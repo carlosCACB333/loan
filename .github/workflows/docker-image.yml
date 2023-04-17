@@ -35,7 +35,9 @@ jobs:
       run:
         docker compose -f docker-compose.prod.yml build
     - name: Push image
+      env:
+        IMAGE_NAME: carloscb8080/loan:v1.0.0
       run:
-        docker push carloscb8080/loan:v1.0.0
+        docker push $IMAGE_NAME
 #     - name: Build the Docker image
 #       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
