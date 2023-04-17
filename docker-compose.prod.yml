@@ -1,0 +1,10 @@
+version: "3"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    image: ${IMAGE_NAME}
+    ports:
+      - ${PORT}:${PORT}

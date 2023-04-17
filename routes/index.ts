@@ -19,5 +19,5 @@ router.use('/api/v1', apiRouter);
 
 // ruta general
 router.get('*', (req, res) => {
-  res.send('Bienvenido a la api de prestamos ');
+  res.send(`<h1>Bienvenido a loan api</h1>`);
 });
