@@ -25,5 +25,11 @@ jobs:
         echo "Start login"
         docker login -u $DOCKER_USER -p DOCKER_PASSWORD
         echo "End login"
+    - name: Buid image
+      run:
+        docker compose -f docker-compose.prod.yml build
+    - name: Push image
+      run:
+        docker push carloscb8080/loan:v1.0.0
 #     - name: Build the Docker image
 #       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
