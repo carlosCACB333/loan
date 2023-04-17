@@ -2,55 +2,46 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        
-    - name: Git Semantic Version
-      id: version
-      uses: PaulHatch/semantic-version@v4.0.3
-      with:
-        major_pattern: "major:"
-        minor_pattern: "feat:"
-        format: "${major}.${minor}.{patch}-prerelease${increment}"
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Docker login
-      env: 
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-      run:
-        echo "Start login"
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        echo $NEW_VERSION
-        echo "End login"
-    - name: Buid image
-      env:
-        PORT: 8080
-        MONGO_URL: ${{ secrets.MONGO_URL }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        STAGE: prod
-        IMAGE_NAME: carloscb8080/loan:v1.0.0
-      run:
-        echo $NEW_VERSION
-        docker compose -f docker-compose.prod.yml build
-    - name: Push image
-      env:
-        IMAGE_NAME: carloscb8080/loan:v1.0.0
-      run:
-        docker push $IMAGE_NAME
-        
-#     - name: Build the Docker image
-#       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Git Semantic Version
+        id: version
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "major:"
+          minor_pattern: "feat:"
+          patch_pattern: "fix:"
+          format: "v${major}.${minor}.${patch}-${prerelease}.${increment}"
+
+      - name: Docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        run: echo "Start login"
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "End login"
+
+      - name: Buid image
+        env:
+          PORT: 8080
+          MONGO_URL: ${{ secrets.MONGO_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          STAGE: prod
+          IMAGE_NAME: carloscb8080/loan:${{ steps.version.outputs.version }}
+        run: docker compose -f docker-compose.prod.yml build
+
+      - name: Push image
+        env:
+          IMAGE_NAME: carloscb8080/loan:${{ steps.version.outputs.version }}
+        run: docker push $IMAGE_NAME
