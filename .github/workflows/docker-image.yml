@@ -26,6 +26,8 @@ jobs:
         docker login -u $DOCKER_USER -p DOCKER_PASSWORD
         echo "End login"
     - name: Buid image
+      env:
+        PORT: 8080
       run:
         docker compose -f docker-compose.prod.yml build
     - name: Push image
